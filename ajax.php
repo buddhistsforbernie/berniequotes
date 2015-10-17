@@ -87,8 +87,14 @@ function getQuotes() {
 
 	// add tags
 
+	$qids = [];
+
 	while($row = mysqli_fetch_assoc($query)) {
-			
+		if($qids[$row['id']])
+			continue;
+
+		$qids[$row['id']] = true;
+
 		// tag fudge
 		
 		$sql="SELECT tags.name AS tag FROM quotes, quote_tags, tags WHERE quotes.id=quote_tags.qid AND quote_tags.tid=tags.id AND quotes.id=".$row['id'];
@@ -160,6 +166,7 @@ if(isset($_POST['form_id']) && $_POST['form_id'] != "") {
 		$data['quotes'] = getQuotes();
 	}
 	else if($_POST['form_id'] == 'addquote') {
+
 		error_log('addquote called');
 
 		require_once "recaptchalib.php";
@@ -177,7 +184,6 @@ if(isset($_POST['form_id']) && $_POST['form_id'] != "") {
 				$_POST["g-recaptcha-response"]
 			);
 		}
-
 
 		if(($isAdmin || ($cresponse != null && $cresponse->success)) && !filter_var($_POST['source'], FILTER_VALIDATE_URL) === false && strlen($_POST['quote']) > 0 && strlen($_POST['quote']) < 2000 && strlen($_POST['tags']) > 0 && preg_match('/^[-a-zA-Z0-9_ ,]+$/',$_POST['tags']) === 1) {
 
@@ -232,6 +238,29 @@ if(isset($_POST['form_id']) && $_POST['form_id'] != "") {
 
 		insertTags($qid,$_POST['tags']);
 
+
+	}
+	else if($isAdmin && strpos($_POST['form_id'],'delete-') === 0) {
+
+		error_log($_POST['form_id'].' called');
+
+		$qid = (int)mysqli_real_escape_string($con,substr($_POST['form_id'],7));
+		
+		error_log($qid.' quote');
+
+		$sql="DELETE FROM quotes WHERE id=".$qid;
+
+		$query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysqli_error($con));
+
+		// remove tag relationships
+
+		$sql="DELETE FROM quote_tags WHERE qid=".$qid;
+		$query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysqli_error($con));
+
+		// remove orphan tags
+
+		$sql="DELETE FROM tags WHERE id NOT IN (SELECT tid FROM quote_tags)";
+		$query = mysqli_query($con, $sql) or trigger_error("Query Failed: " . mysqli_error($con));
 
 	}
 	else if($_POST['form_id'] == 'getquotes') {

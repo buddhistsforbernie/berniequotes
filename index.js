@@ -87,7 +87,7 @@ function doAjax(submit,formid) {
 
 	// callback handler that will be called on success
 	request.success(function (result){
-		if(formid == 'addquote')
+		if(formid == 'addquote' || formid.indexOf('delete-') == 0)
 			location.reload();
 			
 		if(result.tags && result.tags.length != 0) {
@@ -122,7 +122,7 @@ function doAjax(submit,formid) {
 			var j = 0;
 			
 			for (quote of result.quotes) {
-				$('#quote-list').append('<div class="quote'+(quote['verified']==0?'-unverified':'')+'"'+(isAdmin?' id="quote-'+j+'" onclick="editQuote(this,'+j+')"':'')+'><div class="quote-text">'+quote['quote'].replace(/\n/g,'<br/>')+'</div><div class="quote-source"><a target="_blank" href="'+quote['source']+'">'+(quote['sourcename']?quote['sourcename']:quote['source'])+'</a></div><div class="quote-tags"><span class="tag-quote">'+quote['tag'].replace(/,/g,'</span><span class="tag-quote">')+'</span></div><div class="qm">❝</div></div>');
+				$('#quote-list').append('<div class="quote'+(quote['verified']==0?'-unverified':'')+'"'+(isAdmin?' id="quote-'+j+'" onclick="editQuote(this,'+j+')"':'')+'><div class="quote-text">'+quote['quote'].replace(/\n/g,'<br/>')+'</div><div class="quote-source"><a target="_blank" href="'+quote['source']+'">'+(quote['sourcename']?quote['sourcename']:quote['source'])+'</a></div><div class="quote-tags"><span class="tag-quote">'+quote['tag'].replace(/-/g,'‑').replace(/,/g,'</span><span class="tag-quote">')+'</span></div><div class="qm">❝</div></div>');
 				if(isAdmin)
 					$('#quote-list').append('<div class="quote quote-admin form" id="quote-admin-'+j+'"><div class="p">Quote: <br/><textarea id="quote" name="quote" cols=64 rows="8" cols="40"  maxlength="2000">'+quote['quote']+'</textarea></div><div class="p">Source Title (opt.): <input id="sourcename" name="sourcename" value="'+(quote['sourcename']?quote['sourcename']:quote['source'])+'"></div><div class="p">Source URL (req.): <input id="source" name="source" value="'+quote['source']+'"></div><div class="p">Tags (comma-separated, req.): <input id="tags" name="tags" value="'+quote['tag']+'"></div><div class="p">Verified <input type="checkbox" id="verified" name="verified"'+(quote['verified'] == 1?' checked':'')+'></div><div class="p"><input type="button" value="save" onclick="doAjax(true,\'quote-admin-'+j+'\')"><input type="button" value="delete" onclick="doAjax(false,\'delete-'+quote['id']+'\')"></div><input type="hidden" name="qid" value="'+quote['id']+'"></div>');
 					

@@ -30,7 +30,8 @@ h2 {
 	border-radius:4px;
 	padding:4px;
 	cursor:pointer;
-	margin:0 5px;
+	margin:0 5px 0 0;
+	line-height:40px;
 }
 .tag-inactive:hover {
 	background-color:#fff;
@@ -39,9 +40,7 @@ h2 {
 	border: 1px solid #FFAAAA;
 	background-color:#FFDDDD;
 }
-.tag-inactive, .tag-active {
-	line-height:40px;
-}
+
 .tag-inactive, .tag-quote {
 	border: 1px solid #CCC;
 	background-color:#EEE;
@@ -64,7 +63,7 @@ h2 {
 	width: 600px;
 	border-radius:10px;
 	margin: 0px auto 20px;
-	padding:20px;
+	padding:20px 20px 0;
 	position:relative;
 }
 .quote {

@@ -79,10 +79,8 @@
 				Tags (comma-separated, req.): <input id="tags" name="tags"><br>
 			</div>
 			<?php
-				if(isset($_GET['admin'])) {
-					if(!$isAdmin)
-						echo '			<div class="g-recaptcha" data-sitekey="6LfW-g4TAAAAAFWShjhL46OrG7RGYtIedrbdzlx9"></div>';
-				}
+				if(!isset($_GET['admin']) || !$isAdmin)
+					echo '			<div class="g-recaptcha" data-sitekey="6LfW-g4TAAAAAFWShjhL46OrG7RGYtIedrbdzlx9"></div>';
 			?>
 			<div>
 			   <input type="button" value="Add" onclick="doAjax(true,'addquote')">
